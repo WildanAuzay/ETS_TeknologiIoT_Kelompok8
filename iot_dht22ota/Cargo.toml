@@ -1,7 +1,7 @@
 [package]
 name = "dev"
 version = "0.1.0"
-authors = ["rival"]
+authors = ["wildanauzay"]
 edition = "2021"
 resolver = "2"
 rust-version = "1.77"
