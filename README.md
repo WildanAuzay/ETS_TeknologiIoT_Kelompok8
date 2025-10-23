@@ -51,7 +51,7 @@ cargo --version
 ```
 ### 2️⃣ Clone Repositori
 ```bash
-git clone https://github.com/<username-kamu>/IoT-DHT22.git
+git clone https://github.com/WildanAuzay/IoT-DHT22.git
 cd IoT-DHT22
 ```
 ### 3️⃣ Siapkan ESP-IDF
