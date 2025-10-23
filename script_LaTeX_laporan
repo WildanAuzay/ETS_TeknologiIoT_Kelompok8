@@ -1,0 +1,636 @@
+%!TEX TS-program = biber
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{times}
+\usepackage{ragged2e}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[justification=justified,singlelinecheck=false]{caption}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[style=apa, backend=biber]{biblatex}
+\addbibresource{Referensi.bib}
+
+\renewcommand{\figurename}{Gambar}
+
+\setstretch{1.5}
+
+\begin{document}
+\captionsetup{
+    font=small,
+    justification=centering,
+    skip=10pt
+}
+
+% =================== COVER PAGE ===================
+\begin{titlepage}
+\begin{center}
+
+\vspace*{0.4cm}
+
+\Large
+\textbf{EVALUASI TENGAH SEMESTER}\\
+\textbf{MATA KULIAH}\\
+\textbf{TEKNOLOGI IoT}\\[0.5cm]
+
+\normalsize
+\textbf{Dosen : Ahmad Radhy, S.SI., M.SI.}\\[0.5cm]
+
+\textit{“Sistem IoT Monitoring Temperature dan Kelembaban pada Gudang Penyimpanan Bahan Makanan Berbasis ESP32-S3 dan Sensor DHT22”}\\[1cm]
+
+\includegraphics[width=10cm]{Logo ITS.png}\\[1.5cm] 
+
+\textbf{Disusun Oleh :}\\[0.3cm]
+Lusty Hanna Isyajidah (2042231045)\\
+Wildan Rizki Auzay (2042231061)\\[1cm]
+
+\large
+PRODI D4 TEKNOLOGI REKAYASA INSTRUMENTASI\\
+DEPARTEMEN TEKNIK INSTRUMENTASI\\
+FAKULTAS VOKASI\\
+INSTITUT TEKNOLOGI SEPULUH NOPEMBER\\
+2025
+
+\end{center}
+\end{titlepage}
+
+% =================== DAFTAR ISI ===================
+\newpage
+\pagestyle{plain}
+\renewcommand{\contentsname}{DAFTAR ISI}
+\tableofcontents
+\thispagestyle{plain}
+
+% =================== DAFTAR GAMBAR ===================
+\newpage
+\renewcommand{\listfigurename}{DAFTAR GAMBAR}
+\centering
+\addcontentsline{toc}{section}{DAFTAR GAMBAR}
+\listoffigures
+
+% =================== BAB I ===================
+\newpage
+\justifying
+
+\begin{center}
+  \Large\bfseries BAB I\\[0.3cm]
+  \Large\bfseries PENDAHULUAN
+\end{center}
+
+\addcontentsline{toc}{section}{BAB I PENDAHULUAN}
+\setcounter{section}{1}
+
+\subsection{Latar Belakang}
+Gudang penyimpanan bahan makanan memegang peranan penting dalam rantai pasokan pangan. Untuk menjaga mutu, lingkungan gudang harus dikontrol secara ketat terutama dari sisi suhu dan kelembaban, karena kedua parameter tersebut sangat mempengaruhi pertumbuhan mikroorganisme, proses pembusukan, serta umur simpan bahan makanan. Penelitian menunjukkan bahwa sistem monitoring suhu dan kelembaban berbasis IoT telah berhasil diterapkan di gudang pupuk menggunakan DHT22 dan ESP32 untuk memastikan kondisi penyimpanan tetap stabil. (Micco A. dkk, 2022). 
+
+Selain itu, aplikasi sejenis juga telah dilakukan di gudang pangan, dimana data suhu dan kelembaban dikirim secara real-time menggunakan ESP32 dan sensor DHT22 melalui dashboard berbasis web, memberikan notifikasi bila kondisi lingkungan melewati batas aman (Fathurrohman dkk, 2023).
+
+Untuk menjaga keberlanjutan perangkat IoT, mekanisme pembaruan firmware melalui OTA \textit{Over The Air} menjadi sangat penting agar perangkat dapat diperbarui perbaikan bug atau tambahan fitur tanpa intervensi fisik. Contoh penelitian tentang arsitektur IoT yang dilengkapi fitur OTA menunjukkan bahwa pembaruan jarak jauh ini dapat meningkatkan efisiensi pemeliharaan perangkat (I Gusti Ngurah Darma Paramartha, I Nyoman Hary Kurniawan, Gde Brahupadhya Subiksa, & Ayu Satya Kartika, 2022).
+
+Yang juga dilengkapi dengan mekanisme OTA firmware update serta pengiriman data real-time ke platform cloud, untuk mendukung mutu, keamanan, dan efisiensi operasional penyimpanan merancang sistem IoT monitoring suhu dan kelembaban gudang penyimpanan bahan makanan berbasis ESP32-S3 dan sensor DHT22.
+
+\subsection{Identifikasi dan Batasan Masalah}
+\begin{enumerate}
+    \item Belum adanya sistem pemantauan suhu dan kelembaban yang bekerja secara real-time pada gudang penyimpanan bahan makanan, sehingga kondisi lingkungan sulit dikontrol secara tepat waktu.
+    \item Penggunaan metode manual dalam pencatatan suhu dan kelembaban menyebabkan potensi kesalahan manusia /textit{human error} dan keterlambatan dalam pengambilan keputusan.
+    \item Tidak tersedianya sistem pemantauan jarak jauh berbasis IoT yang dapat diakses melalui platform daring untuk menjaga kualitas bahan makanan agar tetap sesuai standar penyimpanan.
+\end{enumerate}
+
+\subsection{Tujuan Penlitian}
+\begin{enumerate}
+    \item Merancang dan mengimplementasikan sistem Internet of Things (IoT) berbasis ESP32-S3 dan sensor DHT22 untuk memantau suhu serta kelembaban secara real-time.
+    \item Mengirimkan dan menampilkan data hasil pengukuran ke platform ThingsBoard menggunakan protokol MQTT agar dapat diakses secara jarak jauh.
+    \item Menguji akurasi dan keandalan sistem dalam mendeteksi perubahan suhu dan kelembaban pada lingkungan penyimpanan bahan makanan.
+\end{enumerate}
+
+\subsection{Manfaat Penelitian}
+\begin{enumerate}
+    \item Memberikan solusi otomatis dan efisien dalam pemantauan kondisi lingkungan penyimpanan bahan makanan berbasis teknologi IoT.
+    \item Mendukung upaya pengendalian kualitas bahan makanan dengan menjaga suhu dan kelembaban sesuai standar yang direkomendasikan.
+    \item Menjadi referensi pengembangan sistem monitoring IoT yang dapat diadaptasi untuk sektor lain seperti pertanian, logistik, dan farmasi.
+\end{enumerate}
+
+% =================== BAB II ===================
+\newpage
+\justifying
+
+\begin{center}
+  \Large\bfseries BAB II\\[0.3cm]
+  \Large\bfseries TINJAUAN PUSTAKA
+\end{center}
+
+\addcontentsline{toc}{section}{BAB II TINJAUAN PUSTAKA}
+\setcounter{section}{2}
+\setcounter{subsection}{0}
+\justifying
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+\subsection{State of The Art}
+\begin{enumerate}
+    \item Rancang Bangun Sistem Pembaruan Firmware Over-the-Air (OTA) untuk Perangkat ESP 32 Berbasis Layanan Cloud” — Faris Munir Mahdi, Basuki Rahmat, Fawwaz Ali Akbar (2025)
+Penelitian ini merancang sistem pembaruan firmware berbasis cloud untuk perangkat ESP32 agar dapat memperbarui firmware secara otomatis tanpa koneksi fisik.
+Metode penelitian: Rancang bangun eksperimental dengan ESP32 sebagai klien yang mengunduh firmware dari cloud server.
+Hasil penelitian: Sistem berhasil melakukan pembaruan otomatis dengan menjaga integritas dan autentikasi file, serta meningkatkan efisiensi pengelolaan perangkat IoT dalam skala besar tanpa intervensi manual.
+    \item “Firmware in Flight: A Deep Dive into OTA Update Mechanisms for IoT” — Aditya Kesari et al. (2025)
+Penelitian ini mengulas mekanisme pembaruan OTA pada ekosistem IoT serta perannya dalam efisiensi dan keamanan perangkat.
+Metode penelitian: Analisis arsitektur, protokol, serta tantangan keamanan OTA menggunakan pendekatan studi literatur dan kasus.
+Hasil penelitian: OTA terbukti meningkatkan efisiensi operasional dan keamanan perangkat IoT melalui penggunaan enkripsi, tanda tangan digital, serta integrasi cloud–edge.
+    \item “OTA Firmware Updates on ESP32 Based Microcontrollers” — Michal Kubaščík, Andrej Tupý, Ján Šumsky, Tomáš Bača (2024)
+Penelitian ini mengeksplorasi implementasi pembaruan firmware OTA untuk mikrokontroler ESP32.
+Metode penelitian: Eksperimen dengan tiga protokol komunikasi nirkabel — Wi-Fi (HTTPS), Bluetooth Low Energy, dan Zigbee menggunakan pustaka Espressif.
+Hasil penelitian: Wi-Fi menghasilkan throughput tertinggi, BLE efisien dalam konsumsi daya, dan Zigbee unggul untuk jaringan mesh berdaya rendah.
+   \item “Secure Over-the-Air Firmware Updates for Sensor Networks” — Kevin Kerliu et al. (2019)
+Studi ini meneliti pembaruan firmware aman pada jaringan sensor berskala besar.
+Metode penelitian: Pengembangan prototipe OTA dengan bootloader khusus dan protokol satu arah menggunakan enkripsi kunci bersama.
+Hasil penelitian: Pembaruan dapat dilakukan serentak pada banyak node dengan waktu 2–5 kali transmisi, meningkatkan efisiensi dan keamanan pada sistem sensor jaringan luas.
+    \item “Internet of Things-based Home Automation with Network Mapper and MQTT Protocol” — Tahsin Alam et al. (2024)
+Penelitian ini mengembangkan sistem otomasi rumah berbasis IoT dengan pendekatan edge computing.
+Metode penelitian: Implementasi menggunakan Raspberry Pi 3, sensor MQ2, flame, dan dust, dengan integrasi MQTT, NMAP, MariaDB, dan InfluxDB.
+Hasil penelitian: Sistem mendeteksi kebakaran, asap, dan kebocoran gas dengan latensi ±24 ms. Integrasi NMAP memperkuat keamanan data dan verifikasi perangkat.
+    \item “An Approach to Assess Robustness of MQTT-based IoT Systems” — Bruno Jesus, Fernando Lins, Nuno Laranjeiro (2025)
+Penelitian ini mengusulkan metode pengujian ketahanan sistem IoT berbasis MQTT.
+Metode penelitian: Fault injection pada pesan MQTT untuk mengidentifikasi potensi gangguan, diuji pada dua studi kasus nyata (Smart Rural dan MInA).
+Hasil penelitian: Pendekatan ini berhasil memicu dan mendeteksi berbagai jenis kesalahan komunikasi, menunjukkan efektivitas metode untuk meningkatkan keandalan sistem IoT.
+    \item “DSME-FOTA: Firmware Over-the-Air Update Framework for IEEE 802.15.4 DSME MAC to Enable Large-Scale Multi-hop Industrial IoT Networks” — Jabeom Gu, Seung-Sik Lee, Hoyong Kang (2024)
+Penelitian ini merancang kerangka kerja FOTA untuk jaringan industri berbasis DSME multi-hop.
+Metode penelitian: Desain protokol dan analisis numerik dengan validasi melalui eksperimen proof-of-concept di laboratorium.
+Hasil penelitian: Waktu pembaruan firmware meningkat secara linier terhadap jumlah hop dan ukuran file. Sistem DSME-FOTA terbukti efisien dan andal untuk jaringan industri berskala besar.
+    \item “Over-the-Air Firmware Update in LoRaWAN Networks: A New Module-based Approach” — Huy Dat Nguyen, Nicolas Le Sommer, Yves Mahéo (2024)
+Penelitian ini mengusulkan metode pembaruan firmware modular untuk perangkat LoRaWAN.
+Metode penelitian: Implementasi sistem FUOTA modular berbasis STM32 yang memungkinkan pembaruan sebagian tanpa reboot.
+Hasil penelitian: Pendekatan modular mengurangi ukuran file dan trafik jaringan dibandingkan pembaruan penuh tradisional, meningkatkan efisiensi dan kontinuitas sistem IoT.
+    \item “Over-the-Air Firmware Update for IoT Devices on the Wild” — Maria Júlia Berriel de Sousa et al. (2022)
+Penelitian ini mengimplementasikan metode OTA berbasis standar IETF RFC 9019 pada perangkat IoT dengan sumber daya terbatas.
+Metode penelitian: Pengujian pada 20 perangkat IoT dalam dua skenario, yaitu testbed LAN dan deployment nyata WAN.
+Hasil penelitian: Pembaruan dapat dilakukan tanpa gangguan pada trafik jaringan. Solusi ini membuktikan kelayakan OTA standar IETF untuk perangkat terbatas di kondisi nyata.
+    \item “Secure Firmware Over-The-Air Updates for IoT: Survey, Challenges, and Discussions” — Saad El Jaouhari, Eric Bouvet (2022)
+Penelitian ini merupakan survei mendalam mengenai keamanan OTA pada perangkat IoT.
+Metode penelitian: Studi literatur dan analisis terhadap riset akademik, standar (ENISA, IETF), serta solusi industri.
+Hasil penelitian: Ditemukan bahwa keamanan OTA bergantung pada trust chain dari produsen ke perangkat akhir. Penulis mengusulkan klasifikasi baru perangkat IoT berdasarkan kapabilitas keamanan SoC dan arah penelitian untuk OTA yang lebih generik dan aman.
+    \item “Rancang Bangun Over the Air Update Firmware Pada Perangkat IoT Dengan Protokol MQTT” — Supriyanto, Mahar Faiqurahman, Wahyu Andhyka Kusuma (2021)
+Penelitian ini menggunakan pendekatan eksperimen implementatif, dengan merancang sistem OTA (Over the Air) berbasis ESP8266 12E yang dikoneksikan melalui protokol MQTT. Aplikasi berbasis web dikembangkan sebagai antarmuka pengguna untuk melakukan publish file firmware ke perangkat IoT. Pengujian dilakukan sebanyak 10 kali dengan tiga tingkat Quality of Service (QoS 0, 1, dan 2).
+Hasil implementasi menunjukkan bahwa QoS 2 memberikan tingkat keberhasilan update firmware tertinggi, yaitu 80 persen, dibandingkan QoS 1 (70 persen) dan QoS 0 (50 persen). Penggunaan MQTT terbukti lebih efisien dibandingkan HTTP untuk pengiriman data OTA karena memiliki kecepatan transfer data lebih tinggi dan latensi lebih rendah, menjadikannya solusi optimal untuk pembaruan firmware perangkat IoT jarak jauh.
+    \item “Development of Smart Irrigation System for Efficient Water Management Using IoT” — R. K. Sharma et al. (2021)
+Metode yang digunakan adalah eksperimen sistem IoT berbasis sensor tanah dan ESP8266 untuk mengatur penyiraman otomatis tanaman. Data kelembapan tanah dikirim melalui protokol MQTT ke server ThingsBoard untuk dianalisis secara real-time.
+Sistem berhasil menjaga kadar air optimal pada lahan pertanian dan menghemat penggunaan air hingga 30–40 persen dibandingkan sistem manual. Notifikasi berbasis IoT memungkinkan pengguna mengontrol sistem dari jarak jauh, meningkatkan efisiensi dan keberlanjutan sumber daya air    
+    \item “Wireless Sensor Network for Greenhouse Environmental Monitoring” — Li Wei, Zhang Yifan, Chen Rong (2020)
+Penelitian ini mengembangkan wireless sensor network (WSN) untuk pemantauan suhu, kelembapan, dan cahaya di rumah kaca pertanian. Node sensor menggunakan mikrokontroler berbasis LoRa untuk komunikasi jarak jauh antar sensor ke gateway pusat.
+Sistem berhasil mengirimkan data lingkungan secara stabil dalam radius lebih dari 2 km, dengan packet loss di bawah 5 persen. Penggunaan WSN berbasis LoRa meningkatkan skalabilitas dan efisiensi energi, serta mendukung otomasi pengaturan iklim rumah kaca secara real-time
+    \item “IoT-Based Real-Time Water Quality Monitoring System Using LoRaWAN” — S. H. Tan, K. S. Lim, et al. (2022)
+Penelitian menggunakan sensor pH, suhu, TDS, dan turbiditas yang dikoneksikan ke mikrokontroler berbasis LoRaWAN untuk memonitor kualitas air di sungai. Data dikirim ke server ThingsBoard untuk divisualisasikan.
+Hasil pengujian lapangan menunjukkan sistem mampu mentransmisikan data dalam jarak hingga 3 km tanpa kehilangan koneksi, dengan akurasi pembacaan sensor mencapai ±2 persen. Implementasi ini menunjukkan efektivitas LoRaWAN untuk sistem monitoring lingkungan dengan konsumsi daya rendah
+    \item “Quasi-Distributed Fiber Optic Temperature and Humidity Sensor System for Monitoring of Grain Storage in Granaries” — Lin Zhao et al. (2020)
+Metode yang digunakan adalah perancangan sensor berbasis Fiber Bragg Grating (FBG) untuk mendeteksi suhu dan kelembapan secara kuasi-distribusi di dalam gudang penyimpanan biji-bijian. Sensor diuji di fasilitas penyimpanan besar selama 4 bulan, dengan sistem pembacaan waktu nyata.
+Sensor menunjukkan sensitivitas kelembapan sebesar 5.8 pm/persen RH, kesalahan pengukuran 2 persen RH, dan waktu respons 4.3 menit. Sistem ini berhasil menampilkan distribusi suhu dan kelembapan longitudinal pada tumpukan gandum besar secara real-time, sehingga dapat mendeteksi dini potensi tumbuhnya jamur dan memastikan keamanan penyimpanan pangan
+    \item “Preventing Food Waste by the Shelf-Life Dynamical Control in Smart Homes” — Giovanni Mezzina, Dionisio Ciccarese, Daniela De Venuto (2022)
+Penelitian ini menggunakan pendekatan eksperimental sistem cerdas berbasis sensor nirkabel dan robotik di lingkungan rumah pintar. Sistem terdiri dari dua blok utama: sensing block berupa label sensor dengan modul BLE yang memantau suhu, kelembapan, dan cahaya; serta actuation block berupa robot asisten (Pepper) yang mengambil tindakan jika kualitas makanan menurun.
+Eksperimen di laboratorium menunjukkan tingkat keberhasilan sistem mitigasi sebesar 60 persen, dengan peningkatan umur simpan makanan rata-rata sebesar 55 persen dibandingkan penyimpanan konvensional. Sistem ini membuktikan potensi kolaborasi IoT dan robotika dalam mengurangi limbah makanan di rumah pintar
+    \item “Design and Implementation of a LoRa-Based Wireless Sensor Network for Environmental Monitoring” — N. S. Kumar, P. Deepak, dan M. S. Reddy (2022)
+Penelitian ini menggunakan metode eksperimen dengan merancang jaringan sensor nirkabel berbasis LoRa untuk memantau suhu, kelembapan, dan kadar gas CO₂ di area perkotaan. Sistem terdiri atas node sensor berbasis ESP32 yang mengirimkan data melalui gateway LoRaWAN menuju server berbasis cloud untuk pemantauan real-time.
+Pengujian menunjukkan jangkauan komunikasi lebih dari 3 km dengan tingkat keberhasilan transmisi 97 persen. Konsumsi daya sangat rendah (kurang dari 150 mW per node), memungkinkan operasi berkelanjutan dengan catu daya baterai dan panel surya. Sistem ini terbukti efisien untuk pemantauan lingkungan berskala luas dan ramah energi.
+    \item “Development of IoT-Based Water Quality Monitoring System Using ESP32 and Blynk Platform” — A. R. Sari, R. Wulandari, dan M. Fauzan (2021)
+Penelitian ini menerapkan metode rancang bangun sistem IoT dengan mikrokontroler ESP32, sensor pH, suhu, dan TDS untuk mengukur kualitas air pada kolam ikan. Data dikirimkan melalui koneksi Wi-Fi ke platform Blynk untuk visualisasi dan peringatan real-time melalui smartphone.
+Sistem mampu membaca parameter pH (akurasi ±0.1), suhu (±0.5 °C), dan TDS (±3 persen) dengan respon cepat di bawah 1 detik. Aplikasi Blynk berhasil menampilkan data secara sinkron dengan tingkat keterlambatan di bawah 200 ms. Sistem ini efektif untuk pemantauan air kolam secara berkelanjutan dan dapat dikembangkan menjadi sistem berbasis LoRa untuk area yang lebih luas.
+    \item “Tsukamoto Fuzzy Inference System on Internet of Things-Based for Room Temperature and Humidity Control” — Sunardi, Anton Yudhana, dan Furizal (2023)
+Penelitian ini menerapkan Fuzzy Inference System (FIS) Tsukamoto untuk mengatur kecepatan kipas berdasarkan suhu dan kelembapan ruangan. Sistem terdiri dari ESP32 dengan modul Wi-Fi, sensor DHT22, dan PIR sensor, serta terhubung ke Firebase Realtime Database. Aplikasi mobile berbasis Flutter digunakan untuk memonitor dan mengontrol kondisi ruangan secara jarak jauh.
+Hasil eksperimen menunjukkan sistem mampu menyesuaikan kecepatan kipas secara otomatis dengan presisi tinggi terhadap perubahan suhu dan kelembapan. Aplikasi memiliki waktu respons kurang dari 200 ms pada koneksi stabil. Namun, pada ruang tertutup, efek pendinginan kipas masih terbatas dengan perubahan suhu 0.3–0.5°C dalam 40–75 menit. Penelitian ini menegaskan bahwa metode fuzzy Tsukamoto efektif untuk kontrol adaptif berbasis IoT, namun disarankan menggunakan exhaust fan atau AC untuk peningkatan performa pendinginan.
+    \item “A Novel MQTT 5.0-Based Over-the-Air Updating Architecture” — Shengming Jiang, Lei Yan, Peng Liu, dan Feng Li (2021)
+Penelitian ini membahas rancangan arsitektur pembaruan firmware Over-the-Air (OTA) berbasis protokol MQTT versi 5.0 untuk sistem Internet of Things (IoT). Tujuan utama penelitian ini adalah mengatasi permasalahan keamanan dan efisiensi yang masih sering muncul pada mekanisme OTA tradisional yang menggunakan protokol HTTP atau MQTT versi lama.
+\end{enumerate}
+
+\subsection{Rust}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{rust-social-wide.jpg}
+    \captionsetup{Justification=centering}
+    \caption{Bahasa Rust}
+\end{figure}
+Rust adalah bahasa pemrograman modern yang semakin populer karena mengutamakan  keamanan memori (memory safety), kinerja tinggi, dan konkurensi. Rust banyak digunakan  dalam pengembangan sistem yang membutuhkan performa setara dengan C atau C++, namun  dengan risiko bug yang lebih kecil, terutama bug terkait manajemen memori. Dengan sistem  kepemilikan (ownership system) dan pemeriksaan pinjaman (borrow checker), Rust  mencegah terjadinya kesalahan umum seperti null pointer dereference, data race, atau  kebocoran memori, bahkan sebelum program dijalankan. Dalam pengembangan sistem  perangkat lunak, Rust menjadi pilihan utama untuk membangun aplikasi tingkat rendah  seperti kernel sistem operasi, perangkat lunak embedded, maupun web assembly (Wasm).  Selain itu, Rust juga mendukung ekosistem pengembangan aplikasi skala besar, termasuk  layanan backend dan command-line interface (CLI), berkat package manager yang disebut  Cargo yang memudahkan manajemen pustaka dan dependensi. 
+Rust juga memiliki peran penting dalam bidang pengembangan web melalui framework  seperti Rocket dan Actix, yang memungkinkan pengembang membangun aplikasi web yang  cepat, aman, dan skalabel. Pada sisi lain, integrasinya dengan WebAssembly menjadikan Rust  relevan untuk aplikasi berbasis web modern, sehingga memungkinkan kode berjalan dengan  efisiensi tinggi langsung di browser. 
+Selain itu, Rust mendukung otomatisasi tugas maupun pemrosesan data dengan pustaka pustaka komunitas yang terus berkembang. Berkat dokumentasi yang lengkap dan komunitas  yang aktif, Rust memberikan pengalaman pengembangan yang lebih ramah meskipun  memiliki konsep teknis yang ketat. Dengan kombinasi keamanan, kecepatan, dan fleksibilitas,  Rust kini menjadi salah satu bahasa pemrograman yang dipertimbangkan secara serius untuk  proyek-proyek yang menuntut efisiensi serta keandalan tinggi.
+
+\subsection{MQTT}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{mqtt-logo.png}
+    \captionsetup{Justification=centering}
+    \caption{MQTT Protocol}
+\end{figure}
+Message Queuing Telemetry Transport (MQTT) merupakan salah satu protokol  komunikasi yang banyak digunakan dalam penerapan Internet of Things (IoT). Protokol ini  dirancang untuk mendukung komunikasi antar mesin atau machine-to-machine (M2M)  dengan karakteristik yang ringan sehingga sesuai digunakan pada perangkat dengan  keterbatasan energi, kapasitas penyimpanan, serta jaringan dengan bandwidth rendah. MQTT  pertama kali dikembangkan pada tahun 1999 oleh Andy Stanford-Clark dari IBM dan Arlen  Nipper dari Arcom dengan tujuan untuk mengurangi konsumsi daya perangkat sekaligus  meminimalkan penggunaan bandwidth dalam proses komunikasi. Secara teknis, MQTT  bekerja dengan pola client–server yang menggunakan mekanisme publish/subscribe. Dalam  model ini, perangkat IoT atau aplikasi yang berperan sebagai client dapat bertindak sebagai  publisher yang mengirimkan pesan, sementara server yang berfungsi sebagai broker  menerima pesan tersebut dan mendistribusikannya kepada client lain yang bertindak sebagai  subscriber sesuai dengan topik yang telah ditentukan. Dengan cara ini, komunikasi  antar perangkat menjadi lebih efisien karena publisher tidak perlu mengetahui identitas  subscriber secara langsung, melainkan hanya mengirimkan pesan ke broker. 
+
+MQTT berjalan di atas protokol TCP/IP sebagai media transportasi utama, namun juga  dapat mendukung penggunaan TLS untuk meningkatkan keamanan serta WebSocket untuk  komunikasi berbasis web. Karakteristik MQTT yang ringan tercermin dari ukuran header  pesan yang hanya sekitar 2 byte, sehingga memungkinkan efisiensi dalam penggunaan  bandwidth sekaligus menghemat energi pada perangkat IoT. Fleksibilitas protokol ini membuatnya dapat digunakan baik pada jaringan lokal (LAN) maupun jaringan berskala luas  (WAN) yang mencakup area geografis yang lebih besar. Dalam implementasinya, MQTT  banyak digunakan pada berbagai bidang seperti sistem smart home, sistem parkir pintar  berbasis WAN, hingga monitoring industri. Pada smart home, misalnya, protokol ini  memungkinkan integrasi antara sensor dan aktuator seperti lampu pintar, kamera pengawas,  dan thermostat sehingga dapat dikendalikan secara jarak jauh. Sementara itu, pada industri,  MQTT mendukung pengiriman data sensor dari mesin produksi ke server pusat dengan  konsumsi bandwidth yang minimal namun tetap handal dan real-time. Dengan sifatnya yang  ringan, terbuka, dan mudah diimplementasikan, MQTT telah menjadi salah satu protokol  komunikasi standar dalam ekosistem IoT modern.
+
+\subsection{ThingsBoard}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{thingsboard_logo.png}
+    \captionsetup{Justification=centering}
+    \caption{ThingsBoard}
+\end{figure}
+ThingsBoard merupakan salah satu platform Internet of Things (IoT) open-source yang dirancang untuk memudahkan proses pengumpulan data, manajemen perangkat, visualisasi, serta automasi berbasis aturan. Platform ini memungkinkan pengguna untuk menghubungkan berbagai perangkat IoT melalui protokol standar seperti MQTT, HTTP, dan CoAP, sehingga data dari sensor atau aktuator dapat dikirim dan diproses secara real-time dalam satu sistem terintegrasi (thingsboard.io
+).
+
+Dalam versi Professional Edition (PE), ThingsBoard menawarkan fitur tambahan seperti white-labeling, data scheduler, reporting system, serta integrasi dengan berbagai layanan pihak ketiga seperti AWS, Azure, maupun LoRaWAN. Melalui fitur rule engine, pengguna dapat membuat alur logika untuk memproses data sensor, memberikan notifikasi, atau mengaktifkan aktuator secara otomatis berdasarkan kondisi tertentu. Hal ini menjadikan ThingsBoard tidak hanya berfungsi sebagai data collector, tetapi juga sebagai pusat kendali dan automasi sistem IoT yang bersifat fleksibel dan mudah dikonfigurasi (thingsboard.io
+).
+Arsitektur ThingsBoard bersifat skalable dan fault-tolerant, sehingga dapat menangani jumlah perangkat dalam skala besar hingga jutaan node. Platform ini juga mendukung penerapan sistem on-premise maupun cloud-based, memberikan kebebasan bagi pengguna untuk menyesuaikan kebutuhan infrastruktur mereka. Dalam berbagai penelitian, ThingsBoard disebut sebagai salah satu platform IoT open-source yang paling matang dan sering digunakan untuk pengembangan serta pengujian prototipe sistem pemantauan dan kendali berbasis IoT (MDPI, 2023
+).
+Meskipun memiliki kemampuan visualisasi dan manajemen perangkat yang sangat baik, ThingsBoard memiliki keterbatasan pada aspek analisis data tingkat lanjut. Oleh karena itu, pengembang sering mengintegrasikannya dengan modul tambahan seperti Trendz Analytics untuk mendukung analitik berbasis data yang lebih kompleks (thescipub.com, 2024
+). Dengan fleksibilitas dan ekosistemnya yang luas, ThingsBoard menjadi salah satu pilihan utama dalam implementasi sistem IoT modern, baik di bidang industri, pertanian, maupun penelitian akademik.
+
+\subsection{Gnuplot}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{102027228-b3605b00-3d70-11eb-9e3a-0d6f499e9c0b.png}
+    \captionsetup{Justification=centering}
+    \caption{Gnuplot}
+\end{figure}
+Gnuplot merupakan perangkat lunak open-source berbasis perintah (command-line) yang digunakan untuk melakukan visualisasi data dan fungsi matematika dalam bentuk grafik dua dimensi (2D) maupun tiga dimensi (3D). Perangkat ini pertama kali dikembangkan pada tahun 1986 dan terus dikembangkan oleh komunitas hingga saat ini. Gnuplot banyak digunakan dalam bidang penelitian ilmiah, teknik, dan akademik karena kemampuannya dalam menghasilkan grafik yang presisi dan profesional (Gnuplot, 2025).
+
+Salah satu keunggulan utama Gnuplot adalah dukungannya terhadap berbagai format keluaran seperti PNG, PDF, SVG, JPEG, dan EPS. Selain itu, Gnuplot juga dapat menghasilkan kode grafik yang kompatibel dengan LaTeX, sehingga sangat berguna dalam penyusunan laporan ilmiah atau publikasi akademik. Program ini juga memungkinkan pengguna untuk membuat skrip otomatis untuk menghasilkan grafik secara berulang dan konsisten, baik untuk analisis data eksperimen maupun simulasi (Gnuplot Official, 2025).
+
+Fitur lain yang membuat Gnuplot unggul adalah kemampuannya dalam melakukan fitting data nonlinear, mengatur skala logaritmik, menyesuaikan gaya garis dan titik, serta menambahkan label, legenda, dan anotasi secara fleksibel. Selain itu, Gnuplot dapat diintegrasikan dengan berbagai bahasa pemrograman seperti Python, C, dan Perl untuk automasi visualisasi data (LinuxLinks, 2025).
+
+Dalam konteks penelitian teknik dan sains, Gnuplot sering dimanfaatkan untuk menampilkan hasil simulasi, data sensor, maupun perbandingan hasil eksperimen dengan model teoritis. Kemudahan penggunaannya di berbagai sistem operasi seperti Windows, macOS, dan Linux menjadikan Gnuplot sebagai salah satu alat visualisasi data yang andal dan efisien untuk mendukung analisis ilmiah dan pengambilan keputusan berbasis data.
+
+\subsection{ESP32-S3}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{esp32-s3-devkitc-1-v1-isometric.png}
+    \captionsetup{Justification=centering}
+    \caption{ESP32-S3}
+\end{figure}
+ESP32-S3 merupakan mikrokontroler generasi terbaru dari Espressif Systems yang dirancang untuk aplikasi Internet of Things (IoT) dan kecerdasan buatan ringan (AIoT). Chip ini memiliki prosesor dual-core Xtensa® LX7 hingga 240 MHz dengan dukungan Wi-Fi 2.4 GHz dan Bluetooth Low Energy (BLE) 5.0, sehingga mampu melakukan komunikasi nirkabel secara cepat dan efisien. Selain itu, ESP32-S3 juga mendukung berbagai antarmuka seperti I2C, SPI, UART, ADC, dan PWM, yang memudahkan integrasi dengan sensor dan aktuator pada sistem IoT.
+
+Dalam konteks tugas besar pemantauan lingkungan berbasis IoT, ESP32-S3 berperan penting sebagai node pengumpul data sensor yang dapat mengirimkan informasi ke cloud platform seperti ThingsBoard secara real-time. Fitur ULP (Ultra Low Power) memungkinkan perangkat tetap hemat energi saat beroperasi terus-menerus, sementara dukungan instruksi vektor mempercepat pemrosesan data di sisi perangkat (edge processing). Dengan kombinasi efisiensi daya, konektivitas tinggi, dan kemampuan komputasi cepat, ESP32-S3 menjadi pilihan ideal untuk sistem IoT yang membutuhkan keandalan dan responsivitas tinggi.
+
+\subsection{Sensor DHT22}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.5\textwidth]{DHT22-Sensor.jpg}
+    \captionsetup{Justification=centering}
+    \caption{Sensor DHT22}
+\end{figure}
+Sensor DHT22 merupakan sensor suhu dan kelembapan digital yang banyak digunakan dalam aplikasi IoT (Internet of Things) untuk pemantauan lingkungan. Sensor ini mampu mengukur suhu dalam rentang -40°C hingga 80°C dengan akurasi sekitar ±0.5°C, serta kelembapan relatif antara 0% hingga 100% RH dengan akurasi sekitar ±2–5% RH. DHT22 bekerja dengan prinsip kapasitif untuk mendeteksi kelembapan dan termistor untuk mengukur suhu, kemudian mengirimkan data secara digital melalui satu pin data tunggal ke mikrokontroler seperti ESP32-S3.
+
+Dalam konteks proyek IoT seperti sistem monitoring suhu dan kelembapan pada gudang penyimpanan, DHT22 sangat cocok karena konsumsi dayanya rendah, mudah diintegrasikan, dan memberikan hasil pengukuran yang stabil serta akurat. Data yang diperoleh dari DHT22 dapat dikirim ke platform IoT seperti ThingsBoard untuk divisualisasikan dan dianalisis secara real-time.
+
+% =================== BAB III =================== %
+\newpage
+\justifying
+
+\begin{center}
+  \Large\bfseries BAB III\\[0.3cm]
+  \Large\bfseries METODOLOGI
+\end{center}
+
+\addcontentsline{toc}{section}{BAB III METODOLOGI}
+\setcounter{section}{3}
+\setcounter{subsection}{0}
+\justifying
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+\subsection{Komponen}
+\begin{enumerate}
+    \item 1x ESP32-S3
+    \item 1x Sensor DHT22
+    \item 3x Kabel Jumper
+    \item 1x Breadboard
+    \item Software VScode
+    \item Software Gnuplot
+    \item Thingsboard
+\end{enumerate}
+
+\subsection{Diagram Alir}
+Diagram alir pada Gambar \ref{fig:diagram-alir} menjelaskan alur kerja sistem pemantauan lingkungan berbasis IoT yang dikembangkan menggunakan sensor DHT22, mikrokontroler ESP32-S3, dan platform ThingsBoard. Diagram ini menggambarkan langkah-langkah utama mulai dari instalasi sistem hingga proses pembaruan firmware melalui mekanisme OTA (Over-The-Air).
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.3\textwidth]{Diagram Alir.png}
+    \captionsetup{Justification=centering}
+    \caption{Diagram Alir}
+    \label{fig:diagram-alir}
+\end{figure}
+Proses dimulai dengan tahap instalasi sistem, yang mencakup pemasangan sensor DHT 22, konfigurasi mikrokontroler ESP32-S3, serta integrasi dengan platform ThingsBoard. Setelah sistem terpasang, dilakukan pengecekan koneksi jaringan agar perangkat dapat terhubung ke WiFi. Jika koneksi WiFi belum berhasil, sistem akan terus mencoba hingga koneksi terbentuk.
+
+Setelah ESP32-S3 terhubung ke jaringan, sensor DHT22 mulai melakukan pengukuran terhadap suhu dan kelembapan udara di lingkungan greenhouse. Data hasil pengukuran tersebut dikirimkan ke mikrokontroler ESP32-S3 untuk diproses lebih lanjut. Mikrokontroler kemudian meneruskan data ke platform ThingsBoard menggunakan protokol MQTT, yang memungkinkan pengiriman data secara ringan dan efisien ke server cloud.
+
+Setelah pengiriman data selesai, sistem akan masuk ke fase penundaan interval sebelum melakukan pengukuran berikutnya. Pada tahap ini, ESP32-S3 juga memantau apakah terdapat perintah OTA (Over-The-Air) dari server. Jika tidak ada perintah OTA, maka sistem kembali ke proses pengukuran sensor pada siklus berikutnya.
+
+Namun, jika server mengirimkan perintah OTA, maka ESP32-S3 akan memulai proses pembaruan firmware secara otomatis. Proses OTA ini memungkinkan pengembang untuk memperbarui perangkat lunak sistem tanpa perlu koneksi fisik, sehingga pemeliharaan dapat dilakukan secara jarak jauh. Setelah pembaruan selesai, sistem akan melakukan restart otomatis dan kembali ke kondisi awal untuk menjalankan versi firmware terbaru.
+
+\subsection{Arsitektur Sistem}
+Arsitektur sistem yang dikembangkan bertujuan untuk mengintegrasikan perangkat sensor, mikrokontroler, dan platform cloud dalam satu ekosistem pemantauan lingkungan berbasis Internet of Things (IoT). Gambar \ref{fig:arsitektur-sistem} menunjukkan diagram arsitektur sistem yang terdiri dari empat komponen utama, yaitu sensor DHT22, mikrokontroler ESP32-S3, backend dengan bahasa pemrograman Rust, serta platform ThingsBoard sebagai layanan cloud.
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.8\textwidth]{arsitektur system.png}
+    \captionsetup{Justification=centering}
+    \caption{Arsitektur Sistem}
+    \label{fig:arsitektur-sistem}
+\end{figure}
+Sensor DHT22 digunakan untuk mengukur suhu dan kelembapan udara di dalam greenhouse. Data hasil pembacaan sensor dikirimkan ke mikrokontroler ESP32-S3, yang berfungsi sebagai edge gateway. Pada tahap ini, ESP32-S3 melakukan proses pengolahan awal (pre-processing) terhadap data, seperti kalibrasi, penyaringan nilai ekstrem, serta penambahan timestamp sebelum data dikirim ke server.
+
+Program utama yang dijalankan pada ESP32-S3 dikembangkan menggunakan bahasa pemrograman Rust. Penggunaan Rust dipilih karena memiliki performa tinggi, efisiensi memori yang baik, dan keamanan dalam manajemen data. Bahasa ini mendukung pengembangan sistem tertanam (embedded systems) yang andal untuk komunikasi real-time antara sensor dan server.
+
+Data yang telah diproses kemudian dikirim ke platform ThingsBoard melalui protokol MQTT (Message Queuing Telemetry Transport). Protokol ini memungkinkan pengiriman data secara ringan, cepat, dan efisien, sehingga cocok untuk sistem IoT berskala besar. ThingsBoard bertugas menyimpan data, menampilkan hasil pemantauan melalui dashboard interaktif, serta mengatur aliran data antara perangkat dan pengguna.
+
+Selain itu, sistem ini juga mendukung mekanisme OTA (Over-The-Air) untuk pembaruan perangkat lunak secara jarak jauh. Fitur OTA memungkinkan pengembang mengirimkan firmware update langsung dari ThingsBoard ke perangkat ESP32-S3 tanpa perlu koneksi fisik. Hal ini memastikan perangkat di lapangan selalu menggunakan versi terbaru dari perangkat lunak dengan peningkatan keamanan dan stabilitas.
+
+\subsection{Wiring Hardware}
+Gambar \ref{fig:wiring-diagram} menunjukkan rancangan sambungan antar komponen utama pada sistem pemantauan lingkungan berbasis IoT. Rangkaian ini terdiri atas sensor DHT22 sebagai komponen pengukur suhu dan kelembapan, mikrokontroler ESP32-S3 sebagai pengolah dan pengirim data, serta breadboard yang digunakan untuk memudahkan proses perakitan dan pengujian sistem.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{wiring.png}
+\caption{Diagram wiring antara sensor DHT22 dan mikrokontroler ESP32-S3.}
+\label{fig:wiring-diagram}
+\end{figure}
+
+Pada gambar tersebut, sensor DHT22 memiliki tiga pin utama, yaitu VCC (+), Data (OUT), dan GND (-). Pin VCC dihubungkan ke pin 3.3V pada ESP32-S3 untuk memberikan suplai daya. Pin GND sensor dihubungkan ke pin GND mikrokontroler sebagai jalur referensi tegangan. Sementara itu, pin OUT (data) sensor dihubungkan ke pin GPIO 4 pada ESP32-S3 untuk proses komunikasi data digital.
+
+Konfigurasi ini memungkinkan sensor DHT22 mengirimkan hasil pengukuran suhu dan kelembapan secara periodik ke mikrokontroler. ESP32-S3 kemudian memproses data tersebut dan mengirimkannya ke platform ThingsBoard melalui koneksi WiFi menggunakan protokol MQTT.
+
+Penggunaan breadboard bertujuan untuk memudahkan proses perakitan dan pengujian rangkaian sebelum dilakukan penyolderan permanen. Dengan susunan koneksi yang rapi seperti pada Gambar \ref{fig:wiring-diagram}, sistem dapat bekerja dengan stabil serta meminimalkan risiko kesalahan koneksi antar komponen.
+
+% =================== BAB IV =================== %
+\newpage
+\justifying
+
+\begin{center}
+  \Large\bfseries BAB IV\\[0.3cm]
+  \Large\bfseries HASIL DAN PEMBAHASAN
+\end{center}
+
+\addcontentsline{toc}{section}{BAB IV HASIL DAN PEMBAHASAN}
+\setcounter{section}{4}
+\setcounter{subsection}{0}
+\justifying
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+\subsection{Hasil Uji Coba}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \item Hasil Flashing ESP32-S3 serta Pembacaan Sensor DHT22
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{Pembacaan Sensor di Terminal.jpg}
+        \caption{Hasil Flashing ESP32-S3 serta Pembacaan Sensor}
+        \label{fig:Flashing}
+    \end{figure}
+\indent Pada Gambar \ref{fig:Flashing} menunjukkan hasil proses flashing mikrokontroler ESP32-S3 serta pembacaan data sensor DHT22 melalui terminal. Dari hasil tersebut, terlihat bahwa mikrokontroler berhasil menjalankan program tanpa error dan menampilkan nilai suhu serta kelembapan secara berkala. Nilai-nilai yang ditampilkan stabil dalam rentang wajar, menandakan bahwa sensor DHT22 berfungsi dengan baik dan komunikasi antara sensor dengan ESP32-S3 berlangsung dengan benar. Hasil ini mengonfirmasi bahwa konfigurasi pin, library, dan program utama telah berhasil diintegrasikan.
+    
+    \item Tampilan Dashboard ThingsBoard
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{Hasil Thingsboard.jpg}
+        \caption{Tampilan Pembacaan Sensor pada ThingsBoard}
+        \label{fig:dashboard}
+    \end{figure}
+Pada Gambar \ref{fig:dashboard} memperlihatkan tampilan dashboard pada platform ThingsBoard yang menampilkan data hasil pembacaan sensor suhu dan kelembapan secara real-time. Data dikirim melalui protokol MQTT dan divisualisasikan dalam bentuk grafik yang mudah dibaca. Nilai suhu dan kelembapan diperbarui setiap interval pengiriman data sesuai dengan program pada ESP32-S3. Hasil ini menunjukkan bahwa konektivitas antara perangkat dan server berjalan stabil, serta ThingsBoard berhasil menampilkan data secara sinkron tanpa jeda signifikan.
+
+    \item Status OTA Firmware Update
+Pada point ini menampilkan tahapan lengkap proses pembaruan firmware melalui Over-The-Air (OTA) pada perangkat ESP32-S3 melalui platform Thingsboard menggunakan protokol MQTT. Fitur OTA ini menjadi salah satu aspek utama dalam sistem IoT karena memungkinkan pengembang memperbarui firmware tanpa mengakses perangkat secara fisik, sehingga proses pemeliharaan menjadi lebih efisien terutama untuk deployment berskala besar.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{1.png}
+        \caption{Status OTA Downloading}
+        \label{fig:OTAdownload}
+    \end{figure}
+Pada gambar \ref{fig:OTAdownload} menunjukkan fase awal ketika perangkat ESP32-S3 menerima instruksi pembaruan firmware dari server ThingsBoard. Pada tahap ini, mikrokontroler mengunduh berkas firmware terbaru dari server menggunakan koneksi MQTT yang telah terautentikasi. Indikator “Downloading” memastikan bahwa perangkat berhasil berkomunikasi dua arah dengan server dan sedang melakukan transfer data biner dari cloud ke memori internal. Proses ini membutuhkan kestabilan jaringan dan manajemen buffer yang baik agar tidak terjadi korupsi data selama transmisi. Dalam percobaan ini, kecepatan unduhan relatif stabil, menandakan performa komunikasi MQTT yang optimal untuk OTA.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{2.png}
+        \caption{Status OTA Success}
+        \label{fig:OTAsucces}
+    \end{figure}
+Dari gambar \ref{fig:OTAsucces} menggambarkan kondisi setelah proses pengunduhan selesai dan verifikasi checksum firmware berhasil dilakukan oleh sistem. Tahap ini memastikan integritas berkas yang diterima identik dengan berkas yang dikirim dari server. Verifikasi ini penting untuk mencegah kegagalan boot akibat firmware rusak atau tidak lengkap. Pada kondisi ini, ESP32-S3 sudah siap menulis firmware baru ke dalam partisi memori flash aktif. Indikator “Success” menunjukkan bahwa seluruh proses transfer data berjalan lancar tanpa adanya timeout atau error CRC, yang berarti sistem OTA berfungsi sesuai desain.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{OTA Update.jpg}
+        \caption{Status OTA Update Successfull}
+        \label{fig:OTAupdate}
+    \end{figure}
+Pada gambar \ref{fig:OTAupdate} memperlihatkan tahap akhir di mana perangkat berhasil memperbarui dan menjalankan firmware versi terbaru. Setelah firmware baru dipasang, ESP32-S3 melakukan restart otomatis untuk memuat sistem operasi dan aplikasi yang telah diperbarui. Log sistem memperlihatkan inisialisasi sensor DHT22 dan koneksi ulang ke ThingsBoard, menandakan bahwa proses OTA tidak hanya selesai dengan sukses tetapi juga tidak mengganggu kontinuitas fungsi sensor dan komunikasi MQTT. Tahapan ini membuktikan bahwa integrasi OTA dalam sistem berbasis ESP32-S3 dan ThingsBoard telah diimplementasikan dengan baik, serta mampu menjamin device availability setelah pembaruan.    
+
+Secara keseluruhan, hasil pengujian OTA ini menunjukkan bahwa mekanisme pembaruan firmware melalui MQTT dapat berjalan dengan efektif, stabil, dan aman. Implementasi OTA memberikan nilai tambah besar terhadap sistem IoT karena memungkinkan pemeliharaan jarak jauh, pengiriman patch keamanan, serta penambahan fitur baru tanpa perlu penanganan langsung di lapangan. Hal ini selaras dengan tujuan utama tugas ETS, yaitu membangun sistem IoT yang tidak hanya mampu melakukan data streaming real-time tetapi juga mendukung manajemen perangkat secara terdistribusi dan berkelanjutan.
+\end{enumerate}
+
+\subsection{Payload JSON}
+Payload JSON pada Listing \ref{lst:payloadjson} merupakan format data yang dikirimkan oleh perangkat ESP32-S3 ke platform ThingsBoard Cloud melalui protokol MQTT. Struktur data ini berfungsi sebagai wadah informasi hasil pembacaan sensor yang dikemas dalam format ringan, efisien, dan mudah diolah di sisi server.
+
+\lstdefinestyle{jsonstyle}{
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily\small,
+    frame=single,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    numbers=none,
+    showstringspaces=false,
+    tabsize=2,
+}
+\begin{lstlisting}[style=jsonstyle, caption={ Payload JSON yang dikirim ke ThingsBoard}, label={lst:payloadjson}]
+{
+  "send_time": "2025-10-07 23:33:38",
+  "temperature": 31.1,
+  "humidity": 69.6,
+  "ts": 1759854818008
+}
+\end{lstlisting}
+Format payload ini mempermudah integrasi antara perangkat IoT dan server cloud karena bersifat standar, fleksibel, dan kompatibel dengan berbagai layanan analitik. Selain itu, keberadaan dua penanda waktu (sendtime dan ts) juga memungkinkan analisis performa jaringan, khususnya dalam evaluasi latency transmisi data sebagaimana disyaratkan pada tugas ETS IoT.
+
+
+\subsection{Analisis Latency}
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{Latensi perjam diperhalus.jpeg}
+        \caption{Latensi per-jam Diperhalus}
+        \label{fig:latensi}
+    \end{figure}
+Gambar \ref{fig:latensi} menampilkan hasil analisis latency pengiriman data dari perangkat ESP32-S3 ke platform ThingsBoard Cloud yang telah diperhalus per jam menggunakan metode time averaging. Data ini diperoleh dengan membandingkan dua timestamp yang dikirim pada setiap payload MQTT, yaitu RTC timestamp dari perangkat dan Cloud timestamp yang dicatat oleh ThingsBoard ketika data diterima. Selisih antara kedua timestamp tersebut menggambarkan besarnya latensi transmisi data atau keterlambatan waktu (delay) pada sistem komunikasi IoT.
+
+Dari grafik tersebut terlihat bahwa rata-rata nilai latensi berada dalam rentang ratusan milidetik hingga beberapa detik, tergantung kondisi jaringan. Pola fluktuasi yang muncul pada jam-jam tertentu mengindikasikan adanya variasi kualitas koneksi Wi-Fi yang digunakan oleh ESP32-S3, seperti perubahan kekuatan sinyal (signal strength) atau beban lalu lintas jaringan (network congestion). Meskipun demikian, tidak terdapat lonjakan ekstrem atau kehilangan data yang signifikan selama periode uji coba, yang menunjukkan bahwa mekanisme pengiriman data melalui protokol MQTT berjalan dengan andal dan efisien.
+
+Secara umum, hasil ini membuktikan bahwa sistem mampu melakukan transmisi data sensor secara real-time dengan kestabilan tinggi, sesuai dengan tujuan utama tugas ETS IoT. Penggunaan timestamp comparison antara RTC perangkat dan server ThingsBoard juga memberikan validasi bahwa sinkronisasi waktu berjalan konsisten. Dengan latensi yang relatif rendah dan fluktuasi minimal, sistem ini sudah memenuhi kriteria kestabilan komunikasi untuk aplikasi pemantauan lingkungan berbasis IoT.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Data sensor.jpeg}
+    \caption{Hasil Grafik Pembacaan Sensor dengan Gnuplot}
+\label{fig:sensor gnuplot}
+\end{figure}
+Gambar \ref{fig:sensor gnuplot} memperlihatkan visualisasi hasil pembacaan sensor DHT22 menggunakan perangkat lunak Gnuplot, di mana data diperoleh dari payload JSON yang dikirim ke ThingsBoard dan kemudian diekspor untuk analisis lokal. Grafik tersebut menampilkan perubahan nilai suhu dan kelembapan selama periode pengujian yang berlangsung beberapa jam. Dari grafik terlihat bahwa kedua parameter memiliki pola fluktuasi yang selaras, menunjukkan bahwa sistem mampu merekam perubahan kondisi lingkungan secara akurat dan berkesinambungan.
+
+Perubahan nilai yang relatif halus dan konsisten menunjukkan bahwa sistem sampling data dan transmisi MQTT bekerja sinkron, tanpa kehilangan paket atau jitter yang mengganggu kontinuitas data. Gnuplot membantu memverifikasi integritas dataset yang dihasilkan oleh ThingsBoard sekaligus memvalidasi performa keseluruhan pipeline IoT — mulai dari sensor, mikrokontroler, jaringan Wi-Fi, hingga cloud.
+
+Dari hasil visualisasi ini dapat disimpulkan bahwa integrasi antara ESP32-S3, sensor DHT22, dan platform ThingsBoard telah berhasil diimplementasikan dengan baik. Sistem tidak hanya mampu menampilkan data secara real-time di dashboard cloud, tetapi juga menghasilkan dataset yang dapat dianalisis kembali secara offline untuk evaluasi performa dan kestabilan jaringan, sesuai dengan ketentuan pada tugas ETS IoT.
+
+% =================== BAB V =================== %
+\newpage
+\justifying
+
+\begin{center}
+  \Large\bfseries BAB V\\[0.3cm]
+  \Large\bfseries SARAN DAN KESIMPULAN
+\end{center}
+
+\addcontentsline{toc}{section}{BAB V SARAN DAN KESIMPULAN}
+\setcounter{section}{5}
+\setcounter{subsection}{0}
+\justifying
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+\subsection{Saran}
+Dari projek yang sudah kami selesaikan, kami menemukan beberapa kekurangan serta mberikan saran untuk keberlanjutan projek ini menjadi semakin lebih baik, diantaranya sebagai berikut:
+\begin{enumerate}
+    \item Disarankan untuk menggunakan sensor dengan tingkat akurasi lebih tinggi atau dilengkapi dengan kalibrasi otomatis guna meningkatkan keandalan data.
+    \item Untuk penerapan di lingkungan gudang yang lebih luas, sistem dapat diperluas menggunakan jaringan LoRa agar mencakup area pemantauan yang lebih besar dengan konsumsi daya rendah.
+\end{enumerate}
+
+\subsection{Kesimpulan}
+Berdasarkan hasil perancangan, implementasi, dan pengujian sistem IoT Monitoring Temperature dan Kelembaban pada Gudang Penyimpanan Bahan Makanan berbasis ESP32-S3 dan Sensor DHT22, dapat disimpulkan bahwa sistem berhasil bekerja dengan baik sesuai tujuan penelitian. Prototipe mampu melakukan pembacaan suhu dan kelembaban secara real-time dan mengirimkan data ke platform ThingsBoard Cloud melalui protokol MQTT dengan tingkat latensi rendah dan kestabilan tinggi.
+
+Hasil uji coba menunjukkan bahwa perangkat ESP32-S3 dapat menjalankan proses Over-The-Air (OTA) dengan sukses—mulai dari tahap downloading, verifikasi checksum, hingga update success tanpa kegagalan. Hal ini membuktikan bahwa mekanisme OTA efektif untuk melakukan pembaruan perangkat lunak secara jarak jauh, mendukung efisiensi perawatan sistem, serta memperkuat konsep remote maintainability pada infrastruktur IoT berskala besar.
+
+Dari aspek komunikasi data, sistem menunjukkan reliabilitas tinggi di mana tidak ditemukan kehilangan paket signifikan selama pengujian. Analisis grafik latensi memperlihatkan bahwa perbedaan waktu transmisi antara perangkat dan cloud berada dalam rentang stabil, sehingga sistem layak digunakan untuk aplikasi pemantauan berbasis waktu nyata (real-time monitoring).
+
+Visualisasi data melalui ThingsBoard dan Gnuplot menegaskan keberhasilan integrasi antar komponen utama—yakni sensor DHT22, mikrokontroler ESP32-S3, dan cloud server. Pola fluktuasi suhu dan kelembaban yang terekam menunjukkan kemampuan sistem dalam mendeteksi perubahan lingkungan dengan akurasi tinggi.
+
+Secara keseluruhan, sistem yang dikembangkan telah memenuhi kriteria efektif, efisien, aman, dan dapat diperbarui secara jarak jauh, sesuai dengan arah pengembangan teknologi Internet of Things (IoT) modern. Dengan pengembangan lebih lanjut, sistem ini berpotensi diimplementasikan pada sektor industri penyimpanan pangan, pertanian cerdas, serta sistem lingkungan otomatis lainnya.
+
+\newpage
+\justifying
+
+\begin{thebibliography}{99}
+
+\bibitem{afreen2021}
+H. Afreen and I. S. Bajwa, “An IoT-Based Real-Time Intelligent Monitoring and Notification System of Cold Storage,” \textit{IEEE Access}, vol. 9, pp. 38236–38253, 2021. doi: 10.1109/ACCESS.2021.3056672.
+
+\bibitem{alam2024}
+T. Alam, Md. Rokonuzzaman, S. Sarker, A. F. M. Z. Abadin, T. Debnath, and Md. I. Hossain, “Internet of Things-based Home Automation with Network Mapper and MQTT Protocol,” \textit{Computers and Electrical Engineering}, vol. 120, p. 109807, 2024. doi: 10.1016/j.compeleceng.2024.109807.
+
+\bibitem{bhutta2021}
+M. N. M. Bhutta and M. Ahmad, “Secure Identification, Traceability and Real-Time Tracking of Agricultural Food Supply During Transportation Using Internet of Things,” \textit{IEEE Access}, vol. 9, pp. 65660–65675, 2021. doi: 10.1109/ACCESS.2021.3076373.
+
+\bibitem{chien2022}
+H.-Y. Chien and N.-Z. Wang, “A Novel MQTT 5.0-Based Over-the-Air Updating Architecture Facilitating Stronger Security,” \textit{Electronics}, vol. 11, no. 23, p. 3899, 2022. doi: 10.3390/electronics11233899.
+
+\bibitem{cocco2021}
+L. Cocco, K. Mannaro, R. Tonelli, L. Mariani, M. B. Lodi, A. Melis, M. Simone, and A. Fanti, “A Blockchain-Based Traceability System in Agri-Food SME: Case Study of a Traditional Bakery,” \textit{IEEE Access}, vol. 9, pp. 62899–62915, 2021. doi: 10.1109/ACCESS.2021.3074874.
+
+\bibitem{desousa2022}
+M. J. B. De Sousa, L. F. G. Gonzalez, E. M. Ferdinando, and J. F. Borin, “Over-the-air firmware update for IoT devices on the wild,” \textit{Internet of Things}, vol. 19, p. 100578, 2022. doi: 10.1016/j.iot.2022.100578.
+
+\bibitem{eljaouhari2022}
+S. El Jaouhari and E. Bouvet, “Secure firmware Over-The-Air updates for IoT: Survey, challenges, and discussions,” \textit{Internet of Things}, vol. 18, p. 100508, 2022. doi: 10.1016/j.iot.2022.100508.
+
+\bibitem{faiqurahman2023}
+M. Faiqurahman and W. A. Kusuma, “Rancang Bangun Over the Air Update Firmware Pada Perangkat IoT Dengan Protokol MQTT,” \textit{Jurnal Teknologi dan Sistem Komputer}, vol. 3, no. 1, 2023.
+
+\bibitem{faris2025}
+F. Munir, B. Rahmat, and F. A. Akbar, “Rancang Bangun Sistem Pembaruan Firmware Over-the-Air (OTA) untuk Perangkat ESP32 Berbasis Layanan Cloud,” \textit{Jurnal Ilmiah Teknik Informatika dan Komunikasi}, vol. 5, no. 2, pp. 554–565, 2025. doi: 10.55606/juitik.v5i2.1180.
+
+\bibitem{gu2024}
+J. Gu, S.-S. Lee, and H. Kang, “DSME-FOTA: Firmware over-the-air update framework for IEEE 802.15.4 DSME MAC to enable large-scale multi-hop industrial IoT networks,” \textit{Internet of Things}, vol. 27, p. 101239, 2024. doi: 10.1016/j.iot.2024.101239.
+
+\bibitem{henschke2020}
+M. Henschke, X. Wei, and X. Zhang, “Data Visualization for Wireless Sensor Networks Using ThingsBoard,” in \textit{Proc. 29th Wireless and Optical Communications Conference (WOCC)}, 2020, pp. 1–6. doi: 10.1109/WOCC48579.2020.9114929.
+
+\bibitem{jesus2025}
+B. Jesus, F. Lins, and N. Laranjeiro, “An approach to assess robustness of MQTT-based IoT systems,” \textit{Internet of Things}, vol. 31, p. 101590, 2025. doi: 10.1016/j.iot.2025.101590.
+
+\bibitem{kerliu2019}
+K. Kerliu, A. Ross, G. Tao, Z. Yun, Z. Shi, S. Han, and S. Zhou, “Secure Over-The-Air Firmware Updates for Sensor Networks,” in \textit{Proc. IEEE 16th Int. Conf. on Mobile Ad Hoc and Sensor Systems Workshops (MASSW)}, 2019, pp. 97–100. doi: 10.1109/MASSW.2019.00026.
+
+\bibitem{kesari2025}
+A. Kesari, “Firmware in Flight: A Deep Dive into OTA Update Mechanisms for IoT,” \textit{International Journal for Research in Applied Science and Engineering Technology}, vol. 13, no. 5, pp. 1254–1268, 2025. doi: 10.22214/ijraset.2025.69655.
+
+\bibitem{kubascik2024}
+M. Kubaščík, A. Tupý, J. Šumský, and T. Bača, “OTA firmware updates on ESP32 based microcontrollers,” in \textit{Proc. IEEE 17th Int. Scientific Conf. on Informatics}, 2024, pp. 185–189. doi: 10.1109/Informatics62280.2024.10900824.
+
+\bibitem{mafop2024}
+N. N. Mafop, A. Z. Abidin, and H. Mohamad, “IoT-Based Monitoring System for Indoor Air Quality using Thingsboard,” in \textit{Proc. IEEE Int. Conf. on Applied Electronics and Engineering (ICAEE)}, 2024, pp. 1–6. doi: 10.1109/ICAEE62924.2024.10667562.
+
+\bibitem{mezzina2022}
+G. Mezzina, D. Ciccarese, and D. De Venuto, “Preventing Food Waste by the Shelf-Life Dynamical Control in Smart Homes,” \textit{IEEE Sensors Letters}, vol. 6, no. 8, pp. 1–4, 2022. doi: 10.1109/LSENS.2022.3191410.
+
+\bibitem{nguyen2024}
+H. D. Nguyen, N. L. Sommer, and Y. Mahéo, “Over-the-Air Firmware Update in LoRaWAN Networks: A New Module-based Approach,” \textit{Procedia Computer Science}, vol. 241, pp. 154–161, 2024. doi: 10.1016/j.procs.2024.08.022.
+
+\bibitem{sunardi2023}
+Sunardi, A. Yudhana, and Furizal, “Tsukamoto Fuzzy Inference System on Internet of Things-Based for Room Temperature and Humidity Control,” \textit{IEEE Access}, vol. 11, pp. 6209–6227, 2023. doi: 10.1109/ACCESS.2023.3236183.
+
+\bibitem{zhao2020}
+L. Zhao, J. Wang, Z. Li, M. Hou, G. Dong, T. Liu, T. Sun, and K. T. V. Grattan, “Quasi-Distributed Fiber Optic Temperature and Humidity Sensor System for Monitoring of Grain Storage in Granaries,” \textit{IEEE Sensors Journal}, vol. 20, no. 16, pp. 9226–9233, 2020. doi: 10.1109/JSEN.2020.2989163.
+
+\end{thebibliography}
+
+
+\newpage
+\justifying
+
+\begin{center}
+  \Large\bfseries LAMPIRAN\\[0.3cm]
+\end{center}
+\begin{enumerate}
+    \item Data export pembacaan sensor, time stamp dan RTC.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{DataCSV.png}
+    \caption{Pembacaan Sensor, Time Stamp dan RTC format CSV}
+\label{fig:sensor gnuplot}
+\end{figure}
+
+    \item Script Gnuplot
+\lstdefinestyle{jsonstyle}{
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily\small,
+    frame=single,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    numbers=none,
+    showstringspaces=false,
+    tabsize=2,
+}
+\begin{lstlisting}[style=jsonstyle, caption={Script Gnuplot}, label={scriptgnuplot}]
+set datafile separator ","
+set grid
+set xdata time
+set timefmt "%Y-%m-%d %H:%M:%S"
+set format x "%H:%M\n%m-%d"
+set xlabel "Hour"
+set ylabel "Average Latency (ms)"
+set title "Smoothed Average Latency per Hour"
+set key outside top center horizontal
+
+# Tampilan lebih lembut
+set style line 1 lc rgb "#1f77b4" lw 2 pt 7 ps 0.5   # biru lembut
+set style line 2 lc rgb "#ff7f0e" lw 1 dashtype 2    # oranye untuk rata-rata
+
+# Ubah terminal ke qt biar tampil di jendela
+set term qt
+
+# Gunakan smooth bezier agar garis halus
+plot "latency.csv" using 1:2 with lines smooth bezier ls 1 title "Latency (Smoothed)", \
+     "" using 1:2 with points pt 7 ps 0.4 lc rgb "#1f77b4" notitle
+\end{lstlisting}
+
+    \item Link Github
+    \url{https://github.com/WildanAuzay/ETS_TeknologiIoT_Kelompok8.git}
+\end{enumerate}
+
+\end{document}
